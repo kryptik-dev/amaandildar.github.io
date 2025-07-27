@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useInView, useAnimation } from 'framer-motion';
-import { HiAcademicCap, HiCode, HiLightningBolt, HiSparkles, HiBrain, HiCog } from 'react-icons/hi';
+import { HiAcademicCap, HiCode, HiLightningBolt, HiSparkles, HiCog } from 'react-icons/hi';
 
 const About = () => {
   const ref = useRef(null);
