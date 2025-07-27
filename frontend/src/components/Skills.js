@@ -1,200 +1,229 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { Code, Database, Brain, Palette, Server, Smartphone, Shield, Zap } from 'lucide-react';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { HiSparkles, HiCode, HiDesktopComputer, HiBrain, HiColorSwatch, HiDatabase } from 'react-icons/hi';
 
 const Skills = ({ skills = [] }) => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  const defaultSkills = [
-    { name: 'Frontend Development', category: 'Development', level: 90, icon: Code, color: 'text-neon-cyan' },
-    { name: 'React/Next.js', category: 'Development', level: 85, icon: Code, color: 'text-neon-cyan' },
-    { name: 'JavaScript/TypeScript', category: 'Development', level: 85, icon: Code, color: 'text-neon-cyan' },
-    { name: 'Python', category: 'Development', level: 80, icon: Code, color: 'text-neon-cyan' },
-    { name: 'Database Design', category: 'Backend', level: 70, icon: Database, color: 'text-neon-purple' },
-    { name: 'FastAPI/Flask', category: 'Backend', level: 75, icon: Server, color: 'text-neon-purple' },
-    { name: 'MongoDB/PostgreSQL', category: 'Backend', level: 70, icon: Database, color: 'text-neon-purple' },
-    { name: 'AI/ML', category: 'AI', level: 75, icon: Brain, color: 'text-neon-pink' },
-    { name: 'Natural Language Processing', category: 'AI', level: 70, icon: Brain, color: 'text-neon-pink' },
-    { name: 'Computer Vision', category: 'AI', level: 65, icon: Brain, color: 'text-neon-pink' },
-    { name: 'UI/UX Design', category: 'Design', level: 80, icon: Palette, color: 'text-neon-blue' },
-    { name: 'Figma/Adobe Suite', category: 'Design', level: 75, icon: Palette, color: 'text-neon-blue' },
-    { name: 'Cybersecurity', category: 'Security', level: 65, icon: Shield, color: 'text-neon-green' },
-    { name: 'Performance Optimization', category: 'Performance', level: 80, icon: Zap, color: 'text-yellow-400' },
-  ];
-
-  const skillsToDisplay = skills.length > 0 ? skills : defaultSkills;
-
-  const categories = [...new Set(skillsToDisplay.map(skill => skill.category))];
-
-  const iconMap = {
-    Development: Code,
-    Backend: Database,
-    AI: Brain,
-    Design: Palette,
-    Security: Shield,
-    Performance: Zap,
-    Mobile: Smartphone,
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
   };
 
-  const colorMap = {
-    Development: 'text-neon-cyan',
-    Backend: 'text-neon-purple',
-    AI: 'text-neon-pink',
-    Design: 'text-neon-blue',
-    Security: 'text-neon-green',
-    Performance: 'text-yellow-400',
-    Mobile: 'text-orange-400',
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12
+      }
+    }
+  };
+
+  // Group skills by category
+  const skillsByCategory = skills.reduce((acc, skill) => {
+    const category = skill.category || 'Other';
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(skill);
+    return acc;
+  }, {});
+
+  const getCategoryIcon = (category) => {
+    switch (category.toLowerCase()) {
+      case 'development':
+        return HiCode;
+      case 'frontend':
+        return HiDesktopComputer;
+      case 'ai':
+        return HiBrain;
+      case 'design':
+        return HiColorSwatch;
+      case 'backend':
+        return HiDatabase;
+      default:
+        return HiCode;
+    }
+  };
+
+  const getCategoryColor = (category) => {
+    switch (category.toLowerCase()) {
+      case 'development':
+        return 'accent-green';
+      case 'frontend':
+        return 'accent-blue';
+      case 'ai':
+        return 'accent-green';
+      case 'design':
+        return 'accent-blue';
+      case 'backend':
+        return 'accent-green';
+      default:
+        return 'accent-green';
+    }
   };
 
   return (
-    <section id="skills" className="py-20 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-6xl font-orbitron font-bold gradient-text mb-6">
-            Skills & Expertise
-          </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Mastering the tools and technologies that shape the future
-          </p>
-        </motion.div>
-
-        {/* Skills by Category */}
-        <div className="space-y-12">
-          {categories.map((category, categoryIndex) => {
-            const categorySkills = skillsToDisplay.filter(skill => skill.category === category);
-            const CategoryIcon = iconMap[category] || Code;
-            const categoryColor = colorMap[category] || 'text-neon-cyan';
-
-            return (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
-                className="glass-card p-8"
-              >
-                <div className="flex items-center mb-8">
-                  <CategoryIcon className={`w-8 h-8 ${categoryColor} mr-4`} />
-                  <h3 className="text-3xl font-orbitron font-bold text-white">
-                    {category}
-                  </h3>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  {categorySkills.map((skill, skillIndex) => (
-                    <motion.div
-                      key={skill.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={inView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ duration: 0.5, delay: categoryIndex * 0.1 + skillIndex * 0.05 }}
-                      className="space-y-3"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          {skill.icon && (
-                            <skill.icon className={`w-5 h-5 ${skill.color || categoryColor}`} />
-                          )}
-                          <span className="text-white font-medium">{skill.name}</span>
-                        </div>
-                        <span className={`text-sm font-bold ${skill.color || categoryColor}`}>
-                          {skill.level}%
-                        </span>
-                      </div>
-
-                      <div className="relative">
-                        <div className="h-2 bg-glass-dark rounded-full overflow-hidden">
-                          <motion.div
-                            className={`h-full bg-gradient-to-r ${
-                              skill.color === 'text-neon-cyan' ? 'from-neon-cyan to-neon-blue' :
-                              skill.color === 'text-neon-purple' ? 'from-neon-purple to-neon-pink' :
-                              skill.color === 'text-neon-pink' ? 'from-neon-pink to-neon-purple' :
-                              skill.color === 'text-neon-blue' ? 'from-neon-blue to-neon-cyan' :
-                              'from-neon-cyan to-neon-purple'
-                            }`}
-                            initial={{ width: 0 }}
-                            animate={inView ? { width: `${skill.level}%` } : {}}
-                            transition={{ duration: 1, delay: categoryIndex * 0.1 + skillIndex * 0.05 + 0.5 }}
-                          />
-                        </div>
-                        
-                        {/* Skill level indicator */}
-                        <motion.div
-                          className={`absolute top-0 h-2 w-1 bg-white rounded-full shadow-neon`}
-                          initial={{ left: 0 }}
-                          animate={inView ? { left: `${skill.level}%` } : {}}
-                          transition={{ duration: 1, delay: categoryIndex * 0.1 + skillIndex * 0.05 + 0.5 }}
-                          style={{ transform: 'translateX(-50%)' }}
-                        />
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })}
+    <section id="skills" ref={ref} className="py-32 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 right-20 w-96 h-96 opacity-10">
+          <div className="w-full h-full bg-accent-green rounded-full animate-pulse-glow" style={{ filter: 'blur(100px)' }} />
         </div>
+      </div>
 
-        {/* Overall Stats */}
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
         >
-          {[
-            { label: 'Technologies', value: '20+', color: 'text-neon-cyan' },
-            { label: 'Years Experience', value: '3+', color: 'text-neon-purple' },
-            { label: 'Projects Completed', value: '50+', color: 'text-neon-pink' },
-            { label: 'Lines of Code', value: '100K+', color: 'text-neon-blue' },
-          ].map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
-              className="glass-card p-6 text-center group hover:shadow-neon transition-all duration-300"
-            >
-              <div className={`text-4xl font-orbitron font-bold ${stat.color} mb-2 group-hover:animate-pulse`}>
-                {stat.value}
-              </div>
-              <div className="text-gray-400 text-sm font-medium">
-                {stat.label}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Continuous Learning */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="mt-16 text-center"
-        >
-          <div className="glass-card p-8 max-w-3xl mx-auto">
-            <div className="flex items-center justify-center mb-6">
-              <Brain className="w-12 h-12 text-neon-pink animate-pulse" />
+          {/* Section Header */}
+          <motion.div variants={itemVariants} className="text-center mb-16">
+            <div className="inline-flex items-center space-x-2 glass-morphism px-6 py-3 rounded-full mb-6">
+              <HiSparkles className="text-accent-green" />
+              <span className="font-jetbrains text-accent-green tracking-wider text-sm">CAPABILITIES</span>
             </div>
-            <h3 className="text-2xl font-orbitron font-bold gradient-text mb-4">
-              Continuous Learning
-            </h3>
-            <p className="text-gray-300 leading-relaxed">
-              Technology evolves rapidly, and so do I. I'm constantly exploring new frameworks, 
-              languages, and methodologies to stay at the forefront of innovation. Currently 
-              diving deep into advanced AI architectures, quantum computing concepts, and 
-              next-generation web technologies.
+            <h2 className="text-display-2 font-space-grotesk font-bold mb-6">
+              <span className="text-white">Technical </span>
+              <span className="gradient-text-green">Arsenal</span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              A comprehensive toolkit of technologies, frameworks, and methodologies that enable me 
+              to build exceptional digital experiences from concept to deployment.
             </p>
+          </motion.div>
+
+          {/* Skills Grid */}
+          <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            {Object.entries(skillsByCategory).map(([category, categorySkills], categoryIndex) => {
+              const Icon = getCategoryIcon(category);
+              const colorClass = getCategoryColor(category);
+
+              return (
+                <motion.div
+                  key={category}
+                  variants={itemVariants}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="glass-morphism-strong rounded-2xl p-8 interactive-card"
+                >
+                  {/* Category Header */}
+                  <div className="flex items-center space-x-3 mb-8">
+                    <div className={`p-3 bg-${colorClass}/20 rounded-xl`}>
+                      <Icon className={`text-2xl text-${colorClass}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-space-grotesk font-bold text-white">
+                        {category}
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        {categorySkills.length} skill{categorySkills.length !== 1 ? 's' : ''}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Skills List */}
+                  <div className="space-y-6">
+                    {categorySkills
+                      .sort((a, b) => (b.level || 0) - (a.level || 0))
+                      .map((skill, skillIndex) => (
+                        <div key={skillIndex} className="space-y-3">
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-white">
+                              {skill.name}
+                            </span>
+                            <span className={`text-${colorClass} font-jetbrains text-sm font-bold`}>
+                              {skill.level || 0}%
+                            </span>
+                          </div>
+                          
+                          {/* Progress Bar */}
+                          <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <motion.div
+                              className={`h-full bg-${colorClass} rounded-full relative`}
+                              initial={{ width: 0 }}
+                              animate={isInView ? { width: `${skill.level || 0}%` } : { width: 0 }}
+                              transition={{ 
+                                duration: 1.2, 
+                                delay: categoryIndex * 0.2 + skillIndex * 0.1,
+                                ease: "easeOut"
+                              }}
+                            >
+                              {/* Animated shimmer effect */}
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+                            </motion.div>
+                          </div>
+
+                          {/* Skill Description */}
+                          {skill.description && (
+                            <p className="text-sm text-gray-400 leading-relaxed">
+                              {skill.description}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+
+                  {/* Category Stats */}
+                  <div className="mt-8 pt-6 border-t border-glass-medium">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400">Average Proficiency</span>
+                      <span className={`text-${colorClass} font-jetbrains font-bold`}>
+                        {Math.round(
+                          categorySkills.reduce((sum, skill) => sum + (skill.level || 0), 0) / categorySkills.length
+                        )}%
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
+
+          {/* Additional Info */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-16 text-center"
+          >
+            <div className="glass-morphism-strong rounded-2xl p-8 max-w-4xl mx-auto">
+              <h3 className="text-2xl font-space-grotesk font-bold gradient-text-blue mb-6">
+                Always Learning
+              </h3>
+              <p className="text-gray-300 leading-relaxed mb-6">
+                Technology evolves rapidly, and so do I. I'm constantly exploring new frameworks, 
+                languages, and methodologies to stay at the forefront of innovation. Currently diving 
+                deep into emerging AI technologies, advanced React patterns, and next-generation development tools.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                {[
+                  'Next.js 14',
+                  'Artificial Intelligence',
+                  'WebAssembly',
+                  'Edge Computing',
+                  'Blockchain Development',
+                  'Quantum Computing'
+                ].map((tech, index) => (
+                  <motion.span
+                    key={index}
+                    whileHover={{ scale: 1.1 }}
+                    className="px-4 py-2 bg-glass-light rounded-full text-sm font-jetbrains text-accent-green border border-accent-green/30 cursor-pointer"
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
