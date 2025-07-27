@@ -57,7 +57,8 @@ function App() {
           stats: {}
         });
       } finally {
-        setTimeout(() => setLoading(false), 2000); // Minimum loading time for effect
+        // Minimum loading time for smooth experience
+        setTimeout(() => setLoading(false), 3000);
       }
     };
 
@@ -70,7 +71,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App relative min-h-screen bg-dark-900 text-white overflow-x-hidden">
+      <div className="App relative min-h-screen bg-primary text-white overflow-x-hidden">
         <BackgroundEffects />
         
         <AnimatePresence mode="wait">
@@ -81,6 +82,7 @@ function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
+                className="relative z-10"
               >
                 <Navigation />
                 <main>
@@ -89,6 +91,62 @@ function App() {
                   <Projects projects={portfolioData.projects} />
                   <Research research={portfolioData.research} />
                   <Skills skills={portfolioData.skills} />
+                  <section id="apps" className="py-32">
+                    <div className="max-w-7xl mx-auto px-6 text-center">
+                      <div className="inline-flex items-center space-x-2 glass-morphism px-6 py-3 rounded-full mb-6">
+                        <span className="font-jetbrains text-accent-green tracking-wider text-sm">APPLICATIONS</span>
+                      </div>
+                      <h2 className="text-display-2 font-space-grotesk font-bold mb-8">
+                        <span className="text-white">Educational </span>
+                        <span className="gradient-text-green">Software</span>
+                      </h2>
+                      <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
+                        Download essential development tools and educational software for your programming journey.
+                      </p>
+                      
+                      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        <motion.div
+                          whileHover={{ scale: 1.05, y: -5 }}
+                          className="glass-morphism-strong rounded-2xl p-8 interactive-card"
+                        >
+                          <div className="flex items-center mb-6">
+                            <img src="/apps/delphi-2010/delphi-2010.png" alt="Delphi 2010" className="w-12 h-12 mr-4" />
+                            <h3 className="text-2xl font-space-grotesk font-bold text-white">Delphi 2010</h3>
+                          </div>
+                          <p className="text-gray-300 mb-6">
+                            The default IDE used in South African schools according to the CAPS curriculum. 
+                            Lightweight version for educational purposes.
+                          </p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-accent-green font-jetbrains">~105MB</span>
+                            <button className="btn-primary">
+                              Download →
+                            </button>
+                          </div>
+                        </motion.div>
+
+                        <motion.div
+                          whileHover={{ scale: 1.05, y: -5 }}
+                          className="glass-morphism-strong rounded-2xl p-8 interactive-card"
+                        >
+                          <div className="flex items-center mb-6">
+                            <img src="/apps/delphi-12/delphi-12.png" alt="Delphi 12" className="w-12 h-12 mr-4" />
+                            <h3 className="text-2xl font-space-grotesk font-bold text-white">Delphi 12</h3>
+                          </div>
+                          <p className="text-gray-300 mb-6">
+                            The latest version of Delphi for modern development with enhanced features 
+                            and improved performance.
+                          </p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-accent-blue font-jetbrains">~1.5GB</span>
+                            <button className="btn-primary">
+                              Download →
+                            </button>
+                          </div>
+                        </motion.div>
+                      </div>
+                    </div>
+                  </section>
                   <Contact />
                 </main>
                 <Footer />
@@ -101,6 +159,7 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
+                className="relative z-10"
               >
                 <Navigation />
                 <ProjectDetail />
@@ -114,6 +173,7 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
+                className="relative z-10"
               >
                 <Navigation />
                 <ResearchDetail />
@@ -129,10 +189,12 @@ function App() {
 
 // Placeholder components for detailed views
 const ProjectDetail = () => (
-  <div className="min-h-screen pt-20 px-6">
+  <div className="min-h-screen pt-32 px-6">
     <div className="max-w-4xl mx-auto">
-      <div className="glass-card p-8">
-        <h1 className="text-4xl font-orbitron font-bold gradient-text mb-6">Project Detail</h1>
+      <div className="glass-morphism-strong rounded-2xl p-8">
+        <h1 className="text-display-3 font-space-grotesk font-bold gradient-text-green mb-6">
+          Project Detail
+        </h1>
         <p className="text-gray-300">Project detail page coming soon...</p>
       </div>
     </div>
@@ -140,10 +202,12 @@ const ProjectDetail = () => (
 );
 
 const ResearchDetail = () => (
-  <div className="min-h-screen pt-20 px-6">
+  <div className="min-h-screen pt-32 px-6">
     <div className="max-w-4xl mx-auto">
-      <div className="glass-card p-8">
-        <h1 className="text-4xl font-orbitron font-bold gradient-text mb-6">Research Detail</h1>
+      <div className="glass-morphism-strong rounded-2xl p-8">
+        <h1 className="text-display-3 font-space-grotesk font-bold gradient-text-green mb-6">
+          Research Detail
+        </h1>
         <p className="text-gray-300">Research detail page coming soon...</p>
       </div>
     </div>

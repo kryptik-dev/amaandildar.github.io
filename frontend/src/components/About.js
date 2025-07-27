@@ -1,200 +1,242 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { User, Heart, Target, Lightbulb, Code2, Cpu, Palette, Database } from 'lucide-react';
+import React, { useRef } from 'react';
+import { motion, useInView, useAnimation } from 'framer-motion';
+import { HiAcademicCap, HiCode, HiLightningBolt, HiSparkles, HiBrain, HiCog } from 'react-icons/hi';
 
 const About = () => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const controls = useAnimation();
+
+  React.useEffect(() => {
+    if (isInView) {
+      controls.start("visible");
+    }
+  }, [isInView, controls]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12
+      }
+    }
+  };
 
   const skills = [
-    {
-      category: 'Frontend',
-      icon: Code2,
-      color: 'text-neon-cyan',
-      skills: ['React/Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion']
-    },
-    {
-      category: 'Backend',
-      icon: Database,
-      color: 'text-neon-purple',
-      skills: ['FastAPI', 'Python', 'MongoDB', 'PostgreSQL']
-    },
-    {
-      category: 'AI/ML',
-      icon: Cpu,
-      color: 'text-neon-pink',
-      skills: ['Machine Learning', 'NLP', 'Computer Vision', 'TensorFlow']
-    },
-    {
-      category: 'Design',
-      icon: Palette,
-      color: 'text-neon-blue',
-      skills: ['UI/UX Design', 'Figma', 'Adobe Creative Suite', 'Glassmorphism']
-    }
+    { name: 'Frontend Development', level: 90, color: 'accent-green' },
+    { name: 'React/Next.js', level: 85, color: 'accent-blue' },
+    { name: 'JavaScript/TypeScript', level: 85, color: 'accent-green' },
+    { name: 'UI/UX Design', level: 80, color: 'accent-blue' },
+    { name: 'Software Development', level: 85, color: 'accent-green' },
+    { name: 'AI/ML Research', level: 75, color: 'accent-blue' }
   ];
 
   const achievements = [
     {
-      number: '50+',
-      label: 'Projects Completed',
-      icon: Target,
-      color: 'text-neon-cyan'
+      icon: HiAcademicCap,
+      title: 'Student at Wingen Heights',
+      description: 'Currently studying while building cutting-edge projects',
+      color: 'accent-green'
     },
     {
-      number: '3+',
-      label: 'Years Experience',
-      icon: User,
-      color: 'text-neon-purple'
+      icon: HiBrain,
+      title: 'AI Research Pioneer',
+      description: 'Pioneering research in AI systems and automation',
+      color: 'accent-blue'
     },
     {
-      number: '100+',
-      label: 'Research Hours',
-      icon: Lightbulb,
-      color: 'text-neon-pink'
+      icon: HiCode,
+      title: 'Full-Stack Developer',
+      description: 'Creating end-to-end digital solutions',
+      color: 'accent-green'
     },
     {
-      number: '∞',
-      label: 'Passion Level',
-      icon: Heart,
-      color: 'text-neon-blue'
+      icon: HiLightningBolt,
+      title: 'Innovation Leader',
+      description: 'Leading next-generation development practices',
+      color: 'accent-blue'
     }
   ];
 
   return (
-    <section id="about" className="py-20 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="about" ref={ref} className="py-32 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-72 h-72 opacity-10">
+          <div className="w-full h-full bg-accent-green rounded-full animate-pulse-glow" style={{ filter: 'blur(60px)' }} />
+        </div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 opacity-10">
+          <div className="w-full h-full bg-accent-blue rounded-full animate-pulse-glow" style={{ filter: 'blur(80px)' }} />
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          variants={containerVariants}
+          initial="hidden"
+          animate={controls}
         >
-          <h2 className="text-4xl md:text-6xl font-orbitron font-bold gradient-text mb-6">
-            About Me
-          </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Passionate developer pushing the boundaries of what's possible in web development and AI
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Story */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-6"
-          >
-            <div className="glass-card p-8">
-              <h3 className="text-3xl font-orbitron font-bold text-white mb-6 flex items-center">
-                <User className="w-8 h-8 text-neon-cyan mr-3" />
-                My Journey
-              </h3>
-              <div className="space-y-4 text-gray-300">
-                <p className="leading-relaxed">
-                  I'm a self-taught developer and AI innovator with an insatiable curiosity for creating 
-                  the impossible. My journey began with a simple fascination for how things work, 
-                  which evolved into a deep passion for building next-generation digital experiences.
-                </p>
-                <p className="leading-relaxed">
-                  From developing AI assistants inspired by science fiction to creating immersive 
-                  web applications with cutting-edge technologies, I continuously push the boundaries 
-                  of what's possible in the digital realm.
-                </p>
-                <p className="leading-relaxed">
-                  My expertise spans across full-stack development, artificial intelligence, and 
-                  innovative user experience design. I believe in the power of technology to 
-                  transform lives and shape the future.
-                </p>
-              </div>
+          {/* Section Header */}
+          <motion.div variants={itemVariants} className="text-center mb-20">
+            <div className="inline-flex items-center space-x-2 glass-morphism px-6 py-3 rounded-full mb-6">
+              <HiSparkles className="text-accent-green" />
+              <span className="font-jetbrains text-accent-green tracking-wider text-sm">ABOUT ME</span>
             </div>
-
-            {/* Achievements */}
-            <div className="grid grid-cols-2 gap-4">
-              {achievements.map((achievement, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-                  className="glass-card p-6 text-center group hover:shadow-neon transition-all duration-300"
-                >
-                  <achievement.icon className={`w-8 h-8 ${achievement.color} mx-auto mb-2 group-hover:animate-pulse`} />
-                  <div className={`text-3xl font-bold ${achievement.color} mb-1`}>
-                    {achievement.number}
-                  </div>
-                  <div className="text-gray-400 text-sm">{achievement.label}</div>
-                </motion.div>
-              ))}
-            </div>
+            <h2 className="text-display-2 font-space-grotesk font-bold mb-6">
+              <span className="text-white">Crafting the </span>
+              <span className="gradient-text-green">Future</span>
+              <span className="text-white"> of </span>
+              <span className="metallic-text">Technology</span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              I'm a self-taught software developer and frontend engineer currently studying at Wingen Heights Secondary School. 
+              My journey in tech started with curiosity and has evolved into a deep passion for creating revolutionary digital experiences.
+            </p>
           </motion.div>
 
-          {/* Right side - Skills */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="space-y-6"
-          >
-            <div className="glass-card p-8">
-              <h3 className="text-3xl font-orbitron font-bold text-white mb-6 flex items-center">
-                <Code2 className="w-8 h-8 text-neon-purple mr-3" />
-                Tech Stack
-              </h3>
-              
-              <div className="space-y-6">
-                {skills.map((category, index) => (
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left Column - Story */}
+            <motion.div variants={itemVariants} className="space-y-8">
+              <div className="glass-morphism-strong rounded-2xl p-8">
+                <h3 className="text-2xl font-space-grotesk font-bold gradient-text-green mb-6">
+                  My Journey
+                </h3>
+                <div className="space-y-4 text-gray-300 leading-relaxed">
+                  <p>
+                    My passion for technology ignited with a simple question: "How can we make digital experiences 
+                    more human?" This curiosity led me down a path of continuous learning and innovation.
+                  </p>
+                  <p>
+                    Currently working on groundbreaking projects including AI systems, community platforms, 
+                    and pushing the boundaries of what's possible in web and app development. My work spans 
+                    from frontend engineering to AI research, always with a focus on creating meaningful impact.
+                  </p>
+                  <p>
+                    When I'm not coding, you'll find me researching emerging technologies, contributing to 
+                    open-source projects, or mentoring other young developers in my community.
+                  </p>
+                </div>
+              </div>
+
+              {/* Achievements Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {achievements.map((achievement, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-                    className="group"
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    className="glass-morphism rounded-xl p-6 text-center group cursor-pointer"
                   >
-                    <div className="flex items-center mb-3">
-                      <category.icon className={`w-6 h-6 ${category.color} mr-3 group-hover:animate-pulse`} />
-                      <h4 className="text-xl font-semibold text-white">{category.category}</h4>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {category.skills.map((skill, skillIndex) => (
-                        <motion.div
-                          key={skillIndex}
-                          whileHover={{ scale: 1.05 }}
-                          className="bg-glass-dark backdrop-blur-sm border border-white/10 rounded-lg p-3 text-center cursor-pointer hover:border-neon-cyan/30 transition-all duration-300"
-                        >
-                          <span className="text-gray-300 text-sm font-medium">{skill}</span>
-                        </motion.div>
-                      ))}
-                    </div>
+                    <achievement.icon 
+                      className={`text-3xl text-${achievement.color} mx-auto mb-3 group-hover:scale-110 transition-transform`} 
+                    />
+                    <h4 className="font-semibold text-white mb-2">{achievement.title}</h4>
+                    <p className="text-sm text-gray-400">{achievement.description}</p>
                   </motion.div>
                 ))}
               </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
 
-        {/* Philosophy */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="mt-16"
-        >
-          <div className="glass-card p-8 text-center">
-            <Lightbulb className="w-12 h-12 text-neon-pink mx-auto mb-6 animate-pulse" />
-            <h3 className="text-3xl font-orbitron font-bold gradient-text mb-6">
-              Philosophy
-            </h3>
-            <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              "Innovation distinguishes between a leader and a follower. I believe in creating 
-              technology that doesn't just solve problems, but reimagines possibilities. 
-              Every line of code is an opportunity to build something extraordinary."
-            </p>
+            {/* Right Column - Skills */}
+            <motion.div variants={itemVariants} className="space-y-8">
+              <div className="glass-morphism-strong rounded-2xl p-8">
+                <h3 className="text-2xl font-space-grotesk font-bold gradient-text-blue mb-8">
+                  Skills & Expertise
+                </h3>
+                <div className="space-y-6">
+                  {skills.map((skill, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-white">{skill.name}</span>
+                        <span className={`text-${skill.color} font-jetbrains text-sm`}>{skill.level}%</span>
+                      </div>
+                      <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                        <motion.div
+                          className={`h-full bg-${skill.color} rounded-full relative`}
+                          initial={{ width: 0 }}
+                          animate={isInView ? { width: `${skill.level}%` } : { width: 0 }}
+                          transition={{ duration: 1.5, delay: index * 0.1 }}
+                        >
+                          <div className={`absolute inset-0 bg-gradient-to-r from-transparent to-white opacity-20 animate-pulse`} />
+                        </motion.div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Current Focus */}
+              <div className="glass-morphism-strong rounded-2xl p-8">
+                <h3 className="text-2xl font-space-grotesk font-bold metallic-text mb-6">
+                  Current Focus
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    {
+                      icon: HiBrain,
+                      text: 'Developing AI-powered applications and research',
+                      color: 'accent-green'
+                    },
+                    {
+                      icon: HiCode,
+                      text: 'Building next-generation web experiences',
+                      color: 'accent-blue'
+                    },
+                    {
+                      icon: HiCog,
+                      text: 'Researching automation and system optimization',
+                      color: 'accent-green'
+                    },
+                    {
+                      icon: HiSparkles,
+                      text: 'Contributing to open-source communities',
+                      color: 'accent-blue'
+                    }
+                  ].map((item, index) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ x: 10 }}
+                      className="flex items-center space-x-4 p-4 rounded-lg hover:bg-glass-light transition-colors cursor-pointer"
+                    >
+                      <item.icon className={`text-2xl text-${item.color} flex-shrink-0`} />
+                      <span className="text-gray-300">{item.text}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </div>
+
+          {/* Bottom CTA */}
+          <motion.div
+            variants={itemVariants}
+            className="text-center mt-20"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const element = document.getElementById('projects');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn-primary text-lg px-8 py-4"
+            >
+              View My Work →
+            </motion.button>
+          </motion.div>
         </motion.div>
       </div>
     </section>
