@@ -186,7 +186,7 @@ const About = () => {
                 <div className="space-y-4">
                   {[
                     {
-                      icon: HiBrain,
+                      icon: HiCode,
                       text: 'Developing AI-powered applications and research',
                       color: 'accent-green'
                     },
