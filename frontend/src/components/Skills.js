@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { HiSparkles, HiCode, HiDesktopComputer, HiBrain, HiColorSwatch, HiDatabase } from 'react-icons/hi';
+import { HiSparkles, HiCode, HiDesktopComputer, HiColorSwatch, HiDatabase } from 'react-icons/hi';
 
 const Skills = ({ skills = [] }) => {
   const ref = useRef(null);
