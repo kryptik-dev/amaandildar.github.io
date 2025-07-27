@@ -1,37 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, Github, Mail, ExternalLink, Zap, Code, Brain } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useAnimation, useInView } from 'framer-motion';
+import { HiArrowRight, HiCode, HiLightningBolt, HiSparkles } from 'react-icons/hi';
 
 const Hero = () => {
-  const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  
-  const texts = [
-    'Next-Gen Developer',
-    'AI Innovator',
-    'Code Architect',
-    'Digital Visionary'
-  ];
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [currentWord, setCurrentWord] = useState('INNOVATIVE');
+  const heroRef = useRef(null);
+  const isInView = useInView(heroRef, { once: true });
+  const controls = useAnimation();
+
+  const words = ['INNOVATIVE', 'CREATIVE', 'GROUNDBREAKING', 'REVOLUTIONARY'];
 
   useEffect(() => {
-    const currentText = texts[currentTextIndex];
-    
-    if (currentIndex < currentText.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText(currentText.slice(0, currentIndex + 1));
-        setCurrentIndex(currentIndex + 1);
-      }, 100);
-      return () => clearTimeout(timeout);
-    } else {
-      const timeout = setTimeout(() => {
-        setCurrentIndex(0);
-        setDisplayText('');
-        setCurrentTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
-      }, 2000);
-      return () => clearTimeout(timeout);
+    if (isInView) {
+      controls.start('visible');
     }
-  }, [currentIndex, currentTextIndex, texts]);
+  }, [isInView, controls]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWord(prev => {
+        const currentIndex = words.indexOf(prev);
+        return words[(currentIndex + 1) % words.length];
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -40,168 +47,227 @@ const Hero = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
+
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Animated background elements */}
+    <section id="home" ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Interactive Background Elements */}
       <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-neon-cyan rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-            }}
-            transition={{
-              duration: 2 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
+        {/* Dynamic gradient that follows mouse */}
+        <div 
+          className="absolute w-96 h-96 opacity-30 transition-all duration-1000 ease-out pointer-events-none"
+          style={{
+            left: `${mousePosition.x}%`,
+            top: `${mousePosition.y}%`,
+            transform: 'translate(-50%, -50%)',
+            background: 'radial-gradient(circle, rgba(0, 255, 136, 0.3) 0%, transparent 70%)',
+            filter: 'blur(60px)'
+          }}
+        />
+
+        {/* Floating geometric shapes */}
+        <div className="absolute inset-0">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute opacity-10"
+              animate={{
+                y: [0, -30, 0],
+                rotate: [0, 180, 360],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{
+                duration: 8 + i * 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: i * 0.5
+              }}
+              style={{
+                left: `${10 + i * 15}%`,
+                top: `${20 + (i % 3) * 30}%`,
+                width: `${40 + i * 5}px`,
+                height: `${40 + i * 5}px`
+              }}
+            >
+              <div className={`w-full h-full ${i % 3 === 0 ? 'bg-accent-green rounded-lg' : i % 3 === 1 ? 'bg-accent-blue rounded-full' : 'bg-metal-light rounded-lg'}`} />
+            </motion.div>
+          ))}
+        </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+      {/* Main Content */}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate={controls}
+        className="relative z-10 text-center max-w-6xl mx-auto px-6"
+      >
+        {/* Subtitle */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="space-y-8"
+          variants={itemVariants}
+          className="mb-6"
         >
-          {/* Main heading */}
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-6xl md:text-8xl font-orbitron font-bold gradient-text mb-6"
-          >
-            кяуρтιк
-          </motion.h1>
+          <div className="inline-flex items-center space-x-2 glass-morphism px-6 py-3 rounded-full">
+            <HiSparkles className="text-accent-green text-xl" />
+            <span className="font-jetbrains text-accent-green tracking-wider text-sm">
+              NEXT-GEN DEVELOPER & AI INNOVATOR
+            </span>
+            <HiSparkles className="text-accent-green text-xl" />
+          </div>
+        </motion.div>
 
-          {/* Typewriter subtitle */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="h-20 flex items-center justify-center"
-          >
-            <h2 className="text-2xl md:text-4xl font-inter font-light text-gray-300">
-              <span className="neon-text">{displayText}</span>
-              <span className="animate-pulse">|</span>
-            </h2>
-          </motion.div>
-
-          {/* Description */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto font-inter"
-          >
-            Crafting the future through code, AI, and innovation. 
-            <br className="hidden md:block" />
-            Pushing boundaries in web development and artificial intelligence.
-          </motion.p>
-
-          {/* Feature highlights */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="flex flex-wrap justify-center gap-6 my-12"
-          >
-            {[
-              { icon: Code, text: 'Full-Stack Development', color: 'text-neon-cyan' },
-              { icon: Brain, text: 'AI & Machine Learning', color: 'text-neon-purple' },
-              { icon: Zap, text: 'Innovation & Research', color: 'text-neon-pink' },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="glass-card px-6 py-4 flex items-center space-x-3 cursor-pointer group"
-              >
-                <item.icon className={`w-6 h-6 ${item.color} group-hover:animate-pulse`} />
-                <span className="text-gray-300 font-medium">{item.text}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => scrollToSection('projects')}
-              className="glow-button flex items-center space-x-2 px-8 py-4 text-lg font-semibold"
+        {/* Main Headline */}
+        <motion.div variants={itemVariants} className="mb-8">
+          <h1 className="text-display-1 font-space-grotesk font-black leading-none mb-4">
+            <span className="block text-white">BUILDING</span>
+            <motion.span
+              key={currentWord}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="block gradient-text-green"
             >
-              <span>Explore Projects</span>
-              <ExternalLink className="w-5 h-5" />
-            </motion.button>
-            
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => scrollToSection('contact')}
-              className="border border-neon-cyan/30 bg-transparent hover:bg-neon-cyan/10 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-300 flex items-center space-x-2"
-            >
-              <Mail className="w-5 h-5" />
-              <span>Get in Touch</span>
-            </motion.button>
-          </motion.div>
+              {currentWord}
+            </motion.span>
+            <span className="block text-white">DIGITAL</span>
+            <span className="block metallic-text">EXPERIENCES</span>
+          </h1>
+        </motion.div>
 
-          {/* Social links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
-            className="flex justify-center space-x-6 mt-12"
+        {/* Description */}
+        <motion.p
+          variants={itemVariants}
+          className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-12 leading-relaxed"
+        >
+          Student Software Developer crafting exceptional digital experiences that transform brands 
+          and captivate audiences. I'm the strategic partner that brings your vision to life through 
+          cutting-edge technology and innovative design.
+        </motion.p>
+
+        {/* CTA Buttons */}
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(0, 255, 136, 0.3)" }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => scrollToSection('projects')}
+            className="group relative overflow-hidden btn-primary text-lg px-8 py-4 flex items-center space-x-3"
           >
-            {[
-              { icon: Github, href: process.env.REACT_APP_GITHUB, label: 'GitHub' },
-              { icon: Mail, href: `mailto:${process.env.REACT_APP_EMAIL}`, label: 'Email' },
-            ].map((social, index) => (
-              <motion.a
-                key={index}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-3 rounded-full glass-effect hover:shadow-neon transition-all duration-300 group"
-                aria-label={social.label}
-              >
-                <social.icon className="w-6 h-6 text-gray-400 group-hover:text-neon-cyan transition-colors duration-300" />
-              </motion.a>
-            ))}
+            <span>Start a Project</span>
+            <HiArrowRight className="text-xl transition-transform group-hover:translate-x-1" />
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => scrollToSection('about')}
+            className="group btn-secondary text-lg px-8 py-4 flex items-center space-x-3"
+          >
+            <span>Learn More</span>
+            <HiCode className="text-xl transition-transform group-hover:rotate-12" />
+          </motion.button>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+        >
+          {[
+            { number: '15+', label: 'Projects Completed', icon: HiCode },
+            { number: '3+', label: 'Years Experience', icon: HiLightningBolt },
+            { number: '100%', label: 'Client Satisfaction', icon: HiSparkles }
+          ].map((stat, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ y: -5, scale: 1.05 }}
+              className="glass-morphism rounded-2xl p-6 text-center group cursor-pointer"
+            >
+              <stat.icon className="text-3xl text-accent-green mx-auto mb-3 group-hover:scale-110 transition-transform" />
+              <div className="text-3xl font-bold gradient-text-green mb-2">{stat.number}</div>
+              <div className="text-gray-300 font-medium">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="flex flex-col items-center space-y-2 cursor-pointer"
+            onClick={() => scrollToSection('about')}
+          >
+            <span className="text-sm text-gray-400 font-jetbrains tracking-wider">SCROLL</span>
+            <div className="w-6 h-10 border-2 border-accent-green rounded-full flex justify-center">
+              <div className="w-1 h-3 bg-accent-green rounded-full mt-2 animate-pulse" />
+            </div>
           </motion.div>
+        </motion.div>
+      </motion.div>
+
+      {/* Side Elements */}
+      <div className="absolute left-8 top-1/2 transform -translate-y-1/2 hidden lg:block">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.5 }}
+          className="flex flex-col space-y-6"
+        >
+          <div className="w-1 h-20 bg-green-gradient" />
+          <div className="transform -rotate-90 whitespace-nowrap">
+            <span className="text-sm font-jetbrains tracking-[0.3em] text-accent-green">
+              STUDENT DEVELOPER
+            </span>
+          </div>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 1.4 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-      >
-        <motion.button
-          onClick={() => scrollToSection('about')}
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="p-2 rounded-full glass-effect hover:shadow-neon transition-all duration-300 group"
+      <div className="absolute right-8 top-1/2 transform -translate-y-1/2 hidden lg:block">
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.5 }}
+          className="flex flex-col space-y-6 items-end"
         >
-          <ChevronDown className="w-6 h-6 text-gray-400 group-hover:text-neon-cyan transition-colors duration-300" />
-        </motion.button>
-      </motion.div>
+          <div className="w-1 h-20 bg-blue-gradient" />
+          <div className="transform rotate-90 whitespace-nowrap">
+            <span className="text-sm font-jetbrains tracking-[0.3em] text-accent-blue">
+              AI INNOVATOR
+            </span>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };
