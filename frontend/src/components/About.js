@@ -53,7 +53,7 @@ const About = () => {
       color: 'accent-green'
     },
     {
-      icon: HiBrain,
+      icon: HiCode,
       title: 'AI Research Pioneer',
       description: 'Pioneering research in AI systems and automation',
       color: 'accent-blue'
