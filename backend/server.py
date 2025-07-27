@@ -165,96 +165,99 @@ async def get_portfolio_stats():
 # Initialize database with sample data
 @app.on_event("startup")
 async def startup_event():
-    # Insert sample data if collections are empty
-    if await projects_collection.count_documents({}) == 0:
-        sample_projects = [
-            {
-                "_id": "the360unity",
-                "title": "The360Unity",
-                "description": "A community for developers to share their projects and learn from each other, collaborate and grow.",
-                "long_description": "The360Unity is a comprehensive platform designed to bring developers together in a collaborative environment. It features project sharing, code reviews, learning resources, and community discussions. Built with modern web technologies, it aims to foster growth and innovation in the developer community.",
-                "technologies": ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
-                "status": "coming_soon",
-                "category": "Web Development",
-                "featured": True,
-                "created_at": datetime.utcnow()
-            },
-            {
-                "_id": "jarvis",
-                "title": "JARVIS",
-                "description": "An AI Intelligent system inspired by Tony Stark's JARVIS with email capabilities and automation features.",
-                "long_description": "JARVIS was an ambitious AI project inspired by Tony Stark's JARVIS. It featured email reading and responding capabilities, food ordering automation, and custom voice training. Due to copyright concerns from Marvel Entertainment, the project was discontinued, but the concepts and learnings continue to influence other AI work.",
-                "technologies": ["Python", "AI/ML", "Automation", "Email API", "Voice Recognition"],
-                "status": "discontinued",
-                "category": "AI/ML",
-                "featured": True,
-                "created_at": datetime.utcnow()
-            },
-            {
-                "_id": "synthora",
-                "title": "Synthora",
-                "description": "A white-label ChatGPT solution for customizable AI chat interfaces.",
-                "long_description": "Synthora is a white-label ChatGPT solution currently in development. This project aims to provide a customizable AI chat interface that can be branded and integrated into various platforms. Built with modern web technologies and AI integration capabilities.",
-                "technologies": ["Python", "Flask", "HTML/CSS", "JavaScript", "AI Integration"],
-                "status": "active",
-                "github_url": "https://github.com/lilpizzaro/synthora",
-                "category": "AI/ML",
-                "featured": True,
-                "created_at": datetime.utcnow()
-            }
-        ]
-        await projects_collection.insert_many(sample_projects)
-    
-    if await research_collection.count_documents({}) == 0:
-        sample_research = [
-            {
-                "_id": "jarviss-ai-brain",
-                "title": "JARVIS's AI BRAIN",
-                "content": "Based on Google's Gemini FOR NOW. Plans on using custom trained models using footage and audio of the actual Iron Man's JARVIS.",
-                "summary": "Exploring the development of JARVIS's AI brain using Google's Gemini with plans for custom training.",
-                "category": "J.A.R.V.I.S.",
-                "tags": ["AI", "Machine Learning", "Google Gemini", "Custom Training"],
-                "date_published": datetime(2025, 4, 21),
-                "featured": True,
-                "created_at": datetime.utcnow()
-            },
-            {
-                "_id": "jarvis-email-capability",
-                "title": "Powerful Email Capability",
-                "content": "JARVIS can now read emails and respond to them. He can also suggest email responses. This is a powerful tool that could change the way JARVIS can be used.",
-                "summary": "JARVIS now has the ability to read and respond to emails with AI-powered suggestions.",
-                "category": "J.A.R.V.I.S.",
-                "tags": ["Email", "AI", "Automation", "Natural Language Processing"],
-                "date_published": datetime(2025, 4, 22),
-                "featured": True,
-                "created_at": datetime.utcnow()
-            },
-            {
-                "_id": "jarvis-food-ordering",
-                "title": "The most powerful tool I have ever created",
-                "content": "JARVIS is now able to order food from a restaurant on his own from just a single command. This takes advantage of custom training the model by capturing audio from me actually ordering food, as well as order items from Takealot. Could he potentially replace a personal assistant?",
-                "summary": "JARVIS can now autonomously order food and items online through custom voice training.",
-                "category": "J.A.R.V.I.S.",
-                "tags": ["Voice Recognition", "Automation", "E-commerce", "AI Assistant"],
-                "date_published": datetime(2025, 4, 23),
-                "featured": True,
-                "created_at": datetime.utcnow()
-            }
-        ]
-        await research_collection.insert_many(sample_research)
-    
-    if await skills_collection.count_documents({}) == 0:
-        sample_skills = [
-            {"name": "Frontend Development", "category": "Development", "level": 90},
-            {"name": "React/Next.js", "category": "Development", "level": 85},
-            {"name": "JavaScript/TypeScript", "category": "Development", "level": 85},
-            {"name": "UI/UX Design", "category": "Design", "level": 80},
-            {"name": "Software Development", "category": "Development", "level": 85},
-            {"name": "Python", "category": "Development", "level": 80},
-            {"name": "AI/ML", "category": "AI", "level": 75},
-            {"name": "Database Design", "category": "Backend", "level": 70}
-        ]
-        await skills_collection.insert_many(sample_skills)
+    try:
+        # Insert sample data if collections are empty
+        if await projects_collection.count_documents({}) == 0:
+            sample_projects = [
+                {
+                    "_id": "the360unity",
+                    "title": "The360Unity",
+                    "description": "A community for developers to share their projects and learn from each other, collaborate and grow.",
+                    "long_description": "The360Unity is a comprehensive platform designed to bring developers together in a collaborative environment. It features project sharing, code reviews, learning resources, and community discussions. Built with modern web technologies, it aims to foster growth and innovation in the developer community.",
+                    "technologies": ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
+                    "status": "coming_soon",
+                    "category": "Web Development",
+                    "featured": True,
+                    "created_at": datetime.utcnow()
+                },
+                {
+                    "_id": "jarvis",
+                    "title": "JARVIS",
+                    "description": "An AI Intelligent system inspired by Tony Stark's JARVIS with email capabilities and automation features.",
+                    "long_description": "JARVIS was an ambitious AI project inspired by Tony Stark's JARVIS. It featured email reading and responding capabilities, food ordering automation, and custom voice training. Due to copyright concerns from Marvel Entertainment, the project was discontinued, but the concepts and learnings continue to influence other AI work.",
+                    "technologies": ["Python", "AI/ML", "Automation", "Email API", "Voice Recognition"],
+                    "status": "discontinued",
+                    "category": "AI/ML",
+                    "featured": True,
+                    "created_at": datetime.utcnow()
+                },
+                {
+                    "_id": "synthora",
+                    "title": "Synthora",
+                    "description": "A white-label ChatGPT solution for customizable AI chat interfaces.",
+                    "long_description": "Synthora is a white-label ChatGPT solution currently in development. This project aims to provide a customizable AI chat interface that can be branded and integrated into various platforms. Built with modern web technologies and AI integration capabilities.",
+                    "technologies": ["Python", "Flask", "HTML/CSS", "JavaScript", "AI Integration"],
+                    "status": "active",
+                    "github_url": "https://github.com/lilpizzaro/synthora",
+                    "category": "AI/ML",
+                    "featured": True,
+                    "created_at": datetime.utcnow()
+                }
+            ]
+            await projects_collection.insert_many(sample_projects)
+        
+        if await research_collection.count_documents({}) == 0:
+            sample_research = [
+                {
+                    "_id": "jarviss-ai-brain",
+                    "title": "JARVIS's AI BRAIN",
+                    "content": "Based on Google's Gemini FOR NOW. Plans on using custom trained models using footage and audio of the actual Iron Man's JARVIS.",
+                    "summary": "Exploring the development of JARVIS's AI brain using Google's Gemini with plans for custom training.",
+                    "category": "J.A.R.V.I.S.",
+                    "tags": ["AI", "Machine Learning", "Google Gemini", "Custom Training"],
+                    "date_published": datetime(2025, 4, 21),
+                    "featured": True,
+                    "created_at": datetime.utcnow()
+                },
+                {
+                    "_id": "jarvis-email-capability",
+                    "title": "Powerful Email Capability",
+                    "content": "JARVIS can now read emails and respond to them. He can also suggest email responses. This is a powerful tool that could change the way JARVIS can be used.",
+                    "summary": "JARVIS now has the ability to read and respond to emails with AI-powered suggestions.",
+                    "category": "J.A.R.V.I.S.",
+                    "tags": ["Email", "AI", "Automation", "Natural Language Processing"],
+                    "date_published": datetime(2025, 4, 22),
+                    "featured": True,
+                    "created_at": datetime.utcnow()
+                },
+                {
+                    "_id": "jarvis-food-ordering",
+                    "title": "The most powerful tool I have ever created",
+                    "content": "JARVIS is now able to order food from a restaurant on his own from just a single command. This takes advantage of custom training the model by capturing audio from me actually ordering food, as well as order items from Takealot. Could he potentially replace a personal assistant?",
+                    "summary": "JARVIS can now autonomously order food and items online through custom voice training.",
+                    "category": "J.A.R.V.I.S.",
+                    "tags": ["Voice Recognition", "Automation", "E-commerce", "AI Assistant"],
+                    "date_published": datetime(2025, 4, 23),
+                    "featured": True,
+                    "created_at": datetime.utcnow()
+                }
+            ]
+            await research_collection.insert_many(sample_research)
+        
+        if await skills_collection.count_documents({}) == 0:
+            sample_skills = [
+                {"name": "Frontend Development", "category": "Development", "level": 90},
+                {"name": "React/Next.js", "category": "Development", "level": 85},
+                {"name": "JavaScript/TypeScript", "category": "Development", "level": 85},
+                {"name": "UI/UX Design", "category": "Design", "level": 80},
+                {"name": "Software Development", "category": "Development", "level": 85},
+                {"name": "Python", "category": "Development", "level": 80},
+                {"name": "AI/ML", "category": "AI", "level": 75},
+                {"name": "Database Design", "category": "Backend", "level": 70}
+            ]
+            await skills_collection.insert_many(sample_skills)
+    except Exception as e:
+        print(f"Error during startup: {e}")
 
 if __name__ == "__main__":
     import uvicorn
